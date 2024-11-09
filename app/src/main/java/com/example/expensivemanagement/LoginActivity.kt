@@ -1,113 +1,128 @@
 package com.example.expensivemanagement
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var loginUsername: EditText
+    private lateinit var loginEmail: EditText
     private lateinit var loginPassword: EditText
     private lateinit var loginButton: Button
     private lateinit var signupRedirectText: TextView
+    private lateinit var forgotPasswordRedirectText: TextView
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loginUsername = findViewById(R.id.editTextUsername)
+        // Khởi tạo các view
+        loginEmail = findViewById(R.id.editTextEmail)
         loginPassword = findViewById(R.id.editTextPassword)
         loginButton = findViewById(R.id.bt_login)
         signupRedirectText = findViewById(R.id.tv_signup)
+        forgotPasswordRedirectText = findViewById(R.id.tv_forgotPassword)
+        auth = FirebaseAuth.getInstance()
 
         loginButton.setOnClickListener {
-            if (!validateUsername() || !validatePassword()) {
-                // Không làm gì nếu có lỗi
-            } else {
-                checkUser()
+            if (validateEmail() && validatePassword()) {
+                loginUser()
             }
         }
 
         signupRedirectText.setOnClickListener {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, SignupActivity::class.java))
+        }
+
+        forgotPasswordRedirectText.setOnClickListener {
+            showForgotPasswordDialog()
         }
     }
 
-    private fun validateUsername(): Boolean {
-        val valUsername = loginUsername.text.toString()
-        return if (valUsername.isEmpty()) {
-            loginUsername.error = "Username cannot be empty"
+    private fun showForgotPasswordDialog() {
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.diag_forgot, null)
+        val emailBox = dialogView.findViewById<EditText>(R.id.editTextEmail)
+
+        builder.setView(dialogView)
+        val dialog = builder.create()
+
+        dialogView.findViewById<Button>(R.id.buttonSendCode).setOnClickListener {
+            val userEmail = emailBox.text.toString().trim()
+            if (userEmail.isEmpty() || !isValidEmail(userEmail)) {
+                Toast.makeText(this, "Nhập địa chỉ email hợp lệ", Toast.LENGTH_SHORT).show()
+            } else {
+                auth.sendPasswordResetEmail(userEmail).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Kiểm tra email để đặt lại mật khẩu", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(this, task.exception?.message ?: "Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+        dialogView.findViewById<Button>(R.id.buttonCancel).setOnClickListener { dialog.dismiss() }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(0))
+        dialog.show()
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        val emailPattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+        return emailPattern.matcher(email).matches()
+    }
+
+    private fun validateEmail(): Boolean {
+        val email = loginEmail.text.toString().trim()
+        return if (email.isEmpty()) {
+            loginEmail.error = "Email không được để trống"
             false
         } else {
-            loginUsername.error = null
+            loginEmail.error = null
             true
         }
     }
 
     private fun validatePassword(): Boolean {
-        val valPassword = loginPassword.text.toString()
-        return if (valPassword.isEmpty()) {
-            loginPassword.error = "Password cannot be empty"
-            false
-        } else if (valPassword.length < 6) { // Kiểm tra mật khẩu có ít nhất 6 ký tự
-            loginPassword.error = "Password must be at least 6 characters long"
-            false
-        } else {
-            loginPassword.error = null
-            true
+        val password = loginPassword.text.toString().trim()
+        return when {
+            password.isEmpty() -> {
+                loginPassword.error = "Mật khẩu không được để trống"
+                false
+            }
+            password.length < 6 -> {
+                loginPassword.error = "Mật khẩu phải có ít nhất 6 ký tự"
+                false
+            }
+            else -> {
+                loginPassword.error = null
+                true
+            }
         }
     }
 
-    private fun checkUser() {
-        val userUsername = loginUsername.text.toString().trim()
-        val userPassword = loginPassword.text.toString().trim()
+    private fun loginUser() {
+        val email = loginEmail.text.toString().trim()
+        val password = loginPassword.text.toString().trim()
 
-        val reference: DatabaseReference = FirebaseDatabase.getInstance().getReference("users")
-        val checkUserDatabase: Query = reference.orderByChild("username").equalTo(userUsername)
-
-        checkUserDatabase.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    loginUsername.error = null
-                    val passwordFromDB = snapshot.child(userUsername).child("password").getValue(String::class.java)
-
-                    if (passwordFromDB == userPassword) {
-                        loginUsername.error = null
-
-                        val emailFromDB = snapshot.child(userUsername).child("email").getValue(String::class.java)
-                        val usernameFromDB = snapshot.child(userUsername).child("username").getValue(String::class.java)
-
-                        // Chuyển sang MainActivity
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
-                            putExtra("email", emailFromDB)
-                            putExtra("username", usernameFromDB)
-                            putExtra("password", passwordFromDB)
-                        }
-
-                        startActivity(intent)
-                        finish() // Kết thúc LoginActivity sau khi chuyển sang MainActivity
-                    } else {
-                        loginPassword.error = "Invalid Credentials"
-                        loginPassword.requestFocus()
-                    }
-                } else {
-                    loginUsername.error = "User does not exist"
-                    loginUsername.requestFocus()
-                }
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, task.exception?.message ?: "Đăng nhập thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi nếu cần
-            }
-        })
+        }
     }
 }
