@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "563827125206",
+    "firebase_url": "https://expensivemanagement-cae5f-default-rtdb.firebaseio.com",
+    "project_id": "expensivemanagement-cae5f",
+    "storage_bucket": "expensivemanagement-cae5f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563827125206:android:e2a40371d587cfc3f59277",
+        "android_client_info": {
+          "package_name": "com.example.expensivemanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563827125206-64rfof9u125pthel88ntoddudfc4umad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEqHoqi3d-GSUiZ7T9Z2hLWQ4INgmOF9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563827125206-64rfof9u125pthel88ntoddudfc4umad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563827125206:android:a815c85a2071492af59277",
+        "android_client_info": {
+          "package_name": "com.example.qlctieu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563827125206-64rfof9u125pthel88ntoddudfc4umad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEqHoqi3d-GSUiZ7T9Z2hLWQ4INgmOF9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563827125206-64rfof9u125pthel88ntoddudfc4umad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
