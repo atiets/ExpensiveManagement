@@ -24,7 +24,7 @@
         android:textSize="80sp" />
 
     <EditText
-        android:id="@+id/editTextEmail"
+        android:id="@+id/editTextUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_tieude"
@@ -33,7 +33,7 @@
         android:layout_marginTop="64dp"
         android:layout_marginEnd="20dp"
         android:drawableLeft="@drawable/signup_username"
-        android:hint=" Email"
+        android:hint=" Username"
         android:textColor="@android:color/black"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
@@ -45,7 +45,7 @@
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextEmail"
+        android:layout_below="@id/editTextUsername"
         android:layout_centerVertical="true"
         android:layout_marginTop="40dp"
         android:layout_marginStart="20dp"
@@ -84,19 +84,6 @@
         android:textSize="20dp"
         android:textStyle="bold"
         android:layout_marginTop="25dp"
-        android:gravity="center"/>
-
-    <TextView
-        android:id="@+id/tv_forgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_signup"
-        android:text="Forgot password?"
-        android:layout_centerHorizontal="true"
-        android:textColor="#FD518B"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:layout_marginTop="15dp"
         android:gravity="center"/>
 
 </RelativeLayout>

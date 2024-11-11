@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFDBDB">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <TextView
-        android:id="@+id/tv_forgotpass"
+        android:id="@+id/tv_title_update_loaithu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Forgot Password"
+        android:text="CẬP NHẬT LOẠI THU"
         android:textStyle="bold"
         android:textSize="30dp"
         android:textColor="#F44336"/>
+
     <EditText
-        android:id="@+id/edtEmail"
+        android:id="@+id/edtNameLoaiThu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"/>
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,21 +26,21 @@
         android:layout_marginTop="16dp">
 
         <Button
-            android:id="@+id/btnReset"
-            android:layout_width="0dp"
+            android:id="@+id/btnCNLoaiThu"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reset"
-            android:textColor="@color/white"
-            android:textSize="20dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/button_background"/>
+            android:layout_weight="1"
+            android:background="@drawable/button_background"
+            android:text="Cập nhật"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
 
         <Button
-            android:id="@+id/btnHuy"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:id="@+id/btnHuyCNLoaiThu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
