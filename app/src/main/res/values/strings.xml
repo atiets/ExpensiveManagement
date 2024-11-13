@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ExpensiveManagement</string>
+    <string name="title_activity_update_dialog_loai_chi2">UpdateDialogLoaiChiActivity2</string>
 </resources>

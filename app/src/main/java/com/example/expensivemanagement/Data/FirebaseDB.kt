@@ -94,13 +94,12 @@ class FirebaseDB {
             loaiChi.id = newId
 
             // lưu đối tượng LoaiChi vào Firebase
-            loaiChiRef.child(newId).setValue(loaiChi).addOnCompleteListener {
-                task ->
-                if (task.isSuccessful) {
-                    println("Thêm LoaiChi thành công")
-                }
-                else {
-                    println("Lỗi khi thêm LoaiChi: ${task.exception?.message}")
+            loaiChiRef.child(newId).setValue(loaiChi)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        println("Thêm LoaiChi thành công")
+                    } else {
+                        println("Lỗi khi thêm LoaiChi: ${task.exception?.message}")
                 }
             }
         }
