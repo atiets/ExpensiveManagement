@@ -16,8 +16,6 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.expensivemanagement.Adapter.LoaiChiAdapter
-import com.example.expensivemanagement.AddLoaiChiActivity
-import com.example.expensivemanagement.Data.FirebaseDB
 import com.example.expensivemanagement.Model.LoaiChi
 import com.example.expensivemanagement.R
 

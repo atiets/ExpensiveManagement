@@ -10,6 +10,4 @@ data class HelperClass(
     override fun toString(): String {
         return "HelperClass(email=$email, username=$username, password=$password)"
     }
-
-    
 }
