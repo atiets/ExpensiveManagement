@@ -1,4 +1,5 @@
 package com.example.expensivemanagement.Fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,13 +32,22 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         val adapter = SettingsAdapter(settings) { position ->
             when (position) {
                 0 -> {
+                    // Mở PasscodeActivity khi chọn "Đặt mã PIN"
                     val intent = Intent(requireContext(), PasscodeActivity::class.java)
                     startActivity(intent)
                 }
+
+                1 -> {
+                    // Xử lý sự kiện cho "Cá nhân hóa"
+                }
+
+                2 -> {
+                    // Xử lý sự kiện cho "Back Up bằng Google Drive"
+                }
             }
         }
-        recyclerView.adapter = adapter
 
+        recyclerView.adapter = adapter
         return view
     }
 }
