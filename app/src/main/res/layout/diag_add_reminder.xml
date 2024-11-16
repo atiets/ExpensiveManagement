@@ -1,0 +1,208 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="#FFD8D8">
+
+            <TextView
+                android:id="@+id/tv_title_add_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Tạo lời nhắc"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:textColor="#FF0057" />
+
+            <!-- Reminder Name Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Tên: "
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF0057" />
+
+                <EditText
+                    android:id="@+id/edt_reminder_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Tên nhắc nhở"
+                    android:background="#FD9192"
+                    android:padding="12dp"
+                    android:textColor="#FF0057"
+                    android:gravity="start|center_vertical" />
+            </LinearLayout>
+
+            <!-- Reminder Frequency Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Tần suất"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF0057" />
+
+                <Spinner
+                    android:id="@+id/sp_reminder_frequency"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:spinnerMode="dropdown"
+                    android:popupBackground="#FFFFFF"
+                    android:background="#FD9192" />
+            </LinearLayout>
+
+            <!-- Reminder Date Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ngày: "
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF0057" />
+
+                <EditText
+                    android:id="@+id/edt_reminder_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="14 tháng 11, 2024"
+                    android:background="#FD9192"
+                    android:padding="12dp"
+                    android:textColor="#FF0057"
+                    android:gravity="start|center_vertical"
+                    android:inputType="date" />
+            </LinearLayout>
+
+            <!-- Reminder Time Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Thời gian: "
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF0057" />
+
+                <EditText
+                    android:id="@+id/edt_reminder_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="16:16"
+                    android:background="#FD9192"
+                    android:padding="12dp"
+                    android:textColor="#FF0057"
+                    android:gravity="start|center_vertical"
+                    android:inputType="time" />
+            </LinearLayout>
+
+            <!-- Reminder Note Field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ghi chú: "
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF0057" />
+
+                <EditText
+                    android:id="@+id/edt_reminder_note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Ghi chú"
+                    android:background="#FD9192"
+                    android:padding="12dp"
+                    android:textColor="#FF0057"
+                    android:gravity="start|center_vertical" />
+            </LinearLayout>
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnThemReminder"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="Tạo"
+                    android:textSize="18sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#23000C"
+                    app:cornerRadius="20dp"
+                    android:layout_marginEnd="10dp" />
+
+                <Button
+                    android:id="@+id/btnHuyThemReinder"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="Hủy"
+                    android:textSize="18sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#857878"
+                    app:cornerRadius="20dp"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

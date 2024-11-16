@@ -1,61 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_title_add_loaithu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="THÊM LOẠI THU"
-        android:textStyle="bold"
-        android:textSize="30dp"
-        android:textColor="#F44336"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/labelEdtNameLoaiThu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtNameLoaiThu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tên loại thu mới"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="20dp"
+    android:background="#FFD8D8">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="#FFD8D8">
 
-        <Button
-            android:id="@+id/btnThemLoaiThu"
-            android:layout_width="117dp"
+        <TextView
+            android:id="@+id/tv_title_add_loaithu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background"
-            android:text="Thêm"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:gravity="center"
+            android:text="THÊM LOẠI THU"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:textColor="#F44336" />
 
-        <Button
-            android:id="@+id/btnHuyThemLoaiThu"
-            android:layout_width="114dp"
+        <EditText
+            android:id="@+id/edtNameLoaiThu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_background"
-            android:text="Hủy"
-            android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:layout_marginTop="16dp"
+            android:hint="Tên loại thu mới"
+            android:background="#FD9192"
+            android:padding="12dp"
+            android:textColor="#F44336"
+            android:gravity="start|center_vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnThemLoaiThu"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:text="Thêm"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:backgroundTint="#23000C"
+                app:cornerRadius="20dp" />
+
+            <Button
+                android:id="@+id/btnHuyThemLoaiThu"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="Hủy"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:backgroundTint="#857878"
+                app:cornerRadius="20dp" />
+        </LinearLayout>
+
     </LinearLayout>
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

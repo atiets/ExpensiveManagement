@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Data
+package com.example.expensivemanagement.data
 
 data class HelperClass(
     var email: String? = null,
@@ -10,6 +10,4 @@ data class HelperClass(
     override fun toString(): String {
         return "HelperClass(email=$email, username=$username, password=$password)"
     }
-
-    
 }

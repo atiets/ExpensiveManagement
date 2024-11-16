@@ -1,6 +1,6 @@
-package com.example.expensivemanagement.Model
+package com.example.expensivemanagement.model
 
-class LoaiThu (
-    var id: String? = null,
-    var nameLoaiThu: String,
+data class LoaiThu(
+    var id: String = "",
+    var name: String = ""
 )

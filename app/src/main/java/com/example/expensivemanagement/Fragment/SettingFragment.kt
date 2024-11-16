@@ -20,7 +20,7 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val settings = listOf(

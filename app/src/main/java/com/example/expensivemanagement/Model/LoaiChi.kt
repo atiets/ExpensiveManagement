@@ -1,9 +1,6 @@
-package com.example.expensivemanagement.Model
+package com.example.expensivemanagement.model
 
-import java.io.Serializable
-
-class LoaiChi (
-
-     var id: String? = null,
-     var nameLoaiChi: String
+data class LoaiChi(
+    var id: String = "",
+    var name: String = ""
 )

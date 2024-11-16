@@ -1,82 +1,38 @@
-package com.example.expensivemanagement.Adapter
+package com.example.expensivemanagement.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.expensivemanagement.Model.LoaiChi
 import com.example.expensivemanagement.R
-import com.google.android.material.textfield.TextInputEditText
+import com.example.expensivemanagement.model.LoaiChi
 
 class LoaiChiAdapter(
-    private val context: Context,
-    private val loaiChis: ArrayList<LoaiChi>
-) : android.widget.BaseAdapter() {
+    private val loaiChiList: MutableList<LoaiChi>,
+    private val onEdit: (LoaiChi) -> Unit,
+    private val onDelete: (String) -> Unit
+) : RecyclerView.Adapter<LoaiChiAdapter.LoaiChiViewHolder>() {
 
-    // Tạo ViewHolder để tối ưu hóa việc tìm kiếm view trong item
-    private class ViewHolder {
-        lateinit var textViewLoaiChi: TextView
-        lateinit var imageViewEdit: ImageView
-        lateinit var imageViewDelete: ImageView
+    inner class LoaiChiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName: TextView = itemView.findViewById(R.id.textViewLoaiChi)
+        val btnEdit: ImageView = itemView.findViewById(R.id.imageViewEditLoaiChi)
+        val btnDelete: ImageView = itemView.findViewById(R.id.imageViewDeleteLoaiChi)
     }
 
-    override fun getCount(): Int {
-        return loaiChis.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LoaiChiViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_loaichi_layout, parent, false)
+        return LoaiChiViewHolder(view)
     }
 
-    override fun getItem(position: Int): Any {
-        return loaiChis[position]
+    override fun onBindViewHolder(holder: LoaiChiViewHolder, position: Int) {
+        val loaiChi = loaiChiList[position]
+        holder.tvName.text = loaiChi.name
+        holder.btnEdit.setOnClickListener { onEdit(loaiChi) }
+        holder.btnDelete.setOnClickListener { onDelete(loaiChi.id) }
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View
-        val viewHolder: ViewHolder
-
-        // Kiểm tra xem có thể tái sử dụng view hay không
-        if (convertView == null) {
-            val inflater = LayoutInflater.from(context)
-            view = inflater.inflate(R.layout.list_loaichi_layout, parent, false)
-
-            // Tạo và gán ViewHolder cho item
-            viewHolder = ViewHolder()
-            viewHolder.textViewLoaiChi = view.findViewById(R.id.textViewLoaiChi)
-            viewHolder.imageViewEdit = view.findViewById(R.id.imageViewEditLoaiChi)
-            viewHolder.imageViewDelete = view.findViewById(R.id.imageViewDeleteLoaiChi)
-
-            view.tag = viewHolder  // Lưu trữ viewHolder vào tag của view
-        } else {
-            // Lấy lại viewHolder nếu có sẵn
-            view = convertView
-            viewHolder = view.tag as ViewHolder
-        }
-
-        // Lấy đối tượng LoaiChi tương ứng với vị trí
-        val loaiChi = loaiChis[position]
-
-        // Cập nhật nội dung của item
-        viewHolder.textViewLoaiChi.text = loaiChi.nameLoaiChi
-
-        // Xử lý sự kiện edit
-        viewHolder.imageViewEdit.setOnClickListener {
-            Toast.makeText(context, "Chỉnh sửa ${loaiChi.nameLoaiChi}", Toast.LENGTH_SHORT).show()
-            // Thực hiện logic chỉnh sửa ở đây
-        }
-
-        // Xử lý sự kiện delete
-        viewHolder.imageViewDelete.setOnClickListener {
-            Toast.makeText(context, "Xóa ${loaiChi.nameLoaiChi}", Toast.LENGTH_SHORT).show()
-            // Thực hiện logic xóa ở đây
-        }
-
-        return view
-    }
+    override fun getItemCount(): Int = loaiChiList.size
 }

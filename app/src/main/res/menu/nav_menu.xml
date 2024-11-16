@@ -26,8 +26,13 @@
             android:title="Báo cáo"/>
 
         <item
+            android:id="@+id/nav_remind"
+            android:icon="@drawable/nav_remind"
+            android:title="Báo cáo"/>
+
+        <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/nav_chart"
+            android:icon="@drawable/nav_setting"
             android:title="Cài đặt"/>
 
         <item

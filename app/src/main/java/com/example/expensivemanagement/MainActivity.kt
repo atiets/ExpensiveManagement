@@ -1,11 +1,22 @@
 package com.example.expensivemanagement
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.widget.Toolbar
-import com.example.expensivemanagement.Fragment.SettingFragment
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.FragmentManager
+import com.example.expensivemanagement.fragment.ChartFragment
+import com.example.expensivemanagement.fragment.ChiFragment
+import com.example.expensivemanagement.fragment.DateFragment
+import com.example.expensivemanagement.fragment.InforFragment
+import com.example.expensivemanagement.fragment.RemindFragment
+import com.example.expensivemanagement.fragment.SettingFragment
+import com.example.expensivemanagement.fragment.ThuFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -38,17 +49,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    override fun onNavigationItemSelected(item: android.view.MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.nav_setting -> {
-                val settingsFragment = SettingFragment()
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, settingsFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        if (itemId == R.id.nav_thu) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ThuFragment()).commit()
+        } else if (itemId == R.id.nav_chi) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ChiFragment()).commit()
+        } else if (itemId == R.id.nav_date) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, DateFragment()).commit()
+        } else if (itemId == R.id.nav_chart) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ChartFragment()).commit()
+        } else if (itemId == R.id.nav_remind) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RemindFragment()).commit()
+        } else if (itemId == R.id.nav_chart) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SettingFragment()).commit()
+        } else if (itemId == R.id.nav_about) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, InforFragment()).commit()
+        } else if (itemId == R.id.nav_logout) {
+//            thongBaoLogOut()
         }
-        drawerLayout.closeDrawers()
+        drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }
