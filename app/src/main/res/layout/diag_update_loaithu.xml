@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="20dp"
     app:cardCornerRadius="40dp"
-    app:cardElevation="20dp"
-    android:background="#FFD8D8">
+    app:cardElevation="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,21 +15,21 @@
         android:background="#FFD8D8">
 
         <TextView
-            android:id="@+id/tv_title_add_loaichi"
+            android:id="@+id/tv_title_update_loaithu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="THÊM LOẠI CHI"
+            android:text="CẬP NHẬT LOẠI THU"
             android:textStyle="bold"
             android:textSize="24sp"
             android:textColor="#F44336" />
 
         <EditText
-            android:id="@+id/edtNameLoaiChi"
+            android:id="@+id/edtUpdateNameLoaiThu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Tên loại chi mới"
+            android:hint="loại thu"
             android:background="#FD9192"
             android:padding="12dp"
             android:textColor="#F44336"
@@ -44,19 +43,19 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/btnThemLoaiChi"
+                android:id="@+id/btnUpdateLoaiThu"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="10dp"
-                android:text="Thêm"
+                android:text="Cập nhật"
                 android:textSize="18sp"
                 android:textColor="@color/white"
                 android:backgroundTint="#23000C"
                 app:cornerRadius="20dp" />
 
             <Button
-                android:id="@+id/btnHuyThemLoaiChi"
+                android:id="@+id/btnHuyUpdateLoaiThu"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
@@ -70,3 +69,4 @@
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+
