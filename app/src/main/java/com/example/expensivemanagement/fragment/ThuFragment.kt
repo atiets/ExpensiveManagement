@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Fragment
+package com.example.expensivemanagement.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

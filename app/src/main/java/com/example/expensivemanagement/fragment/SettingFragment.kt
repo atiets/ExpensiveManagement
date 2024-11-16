@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Fragment
+package com.example.expensivemanagement.fragment
 
 import androidx.fragment.app.Fragment
 import com.example.expensivemanagement.R

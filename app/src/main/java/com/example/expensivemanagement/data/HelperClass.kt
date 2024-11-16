@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Data
+package com.example.expensivemanagement.data
 
 data class HelperClass(
     var email: String? = null,
