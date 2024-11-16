@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.FragmentManager
 import com.example.expensivemanagement.fragment.ChartFragment
 import com.example.expensivemanagement.fragment.ChiFragment
 import com.example.expensivemanagement.fragment.DateFragment
