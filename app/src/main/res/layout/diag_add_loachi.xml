@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="30dp"
-    android:paddingEnd="30dp"
-    android:paddingTop="30dp"
-    android:paddingBottom="30dp">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="20dp"
+    android:background="#FFD8D8">
 
-    <!-- LinearLayout đã được bọc trong ScrollView -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="16dp">
+        android:padding="20dp"
+        android:background="#FFD8D8">
 
-        <!-- Tiêu đề -->
         <TextView
             android:id="@+id/tv_title_add_loaichi"
             android:layout_width="match_parent"
@@ -22,57 +22,51 @@
             android:gravity="center"
             android:text="THÊM LOẠI CHI"
             android:textStyle="bold"
-            android:textSize="30sp"
-            android:textColor="#F44336"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="24sp"
+            android:textColor="#F44336" />
 
-        <!-- EditText cho Tên loại chi mới -->
         <EditText
             android:id="@+id/edtNameLoaiChi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
+            android:layout_marginTop="16dp"
             android:hint="Tên loại chi mới"
-            android:inputType="text"
-            android:layout_marginBottom="16dp"
-            android:imeOptions="actionDone"
-            android:focusableInTouchMode="true"/>
+            android:background="#FD9192"
+            android:padding="12dp"
+            android:textColor="#F44336"
+            android:gravity="start|center_vertical" />
 
-        <!-- Các nút Thêm và Hủy -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:gravity="center">
 
             <Button
                 android:id="@+id/btnThemLoaiChi"
-                android:layout_width="112dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
-                android:minHeight="48dp"
-                android:background="@drawable/button_background"
+                android:layout_marginEnd="10dp"
                 android:text="Thêm"
+                android:textSize="18sp"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:backgroundTint="#23000C"
+                app:cornerRadius="20dp" />
 
             <Button
                 android:id="@+id/btnHuyThemLoaiChi"
-                android:layout_width="123dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_background"
+                android:layout_marginStart="10dp"
                 android:text="Hủy"
-                android:minHeight="48dp"
+                android:textSize="18sp"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:backgroundTint="#857878"
+                app:cornerRadius="20dp" />
         </LinearLayout>
 
     </LinearLayout>
-
-</ScrollView>
+</androidx.cardview.widget.CardView>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.LoaiThuFragment">
+    tools:context=".fragment.RemindFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,32 +18,29 @@
             android:layout_margin="10dp"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/textViewThemLoaiThu"
+                android:id="@+id/tv_title_reminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:gravity="center_horizontal"
-                android:text="DANH SÁCH CÁC LOẠI THU"
+                android:text="DANH SÁCH CÁC KHOẢN NHẮC NHỞ"
                 android:textColor="#F44336"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewLoaiThu"
+            <ListView
+                android:id="@+id/listViewReminder"
                 android:layout_width="match_parent"
-                android:layout_height="545dp"
+                android:layout_height="540dp"
                 android:layout_margin="10dp" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnThemLoaiThu"
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_add"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recyclerViewLoaiThu" />
+                android:id="@+id/btnThemReminder"
+                android:text="Thêm nhắc nhở"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/boxshadow"/>
         </LinearLayout>
 
     </ScrollView>
