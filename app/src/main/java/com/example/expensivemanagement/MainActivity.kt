@@ -1,7 +1,5 @@
 package com.example.expensivemanagement
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -52,9 +50,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         drawerLayout.closeDrawers()
         return true
-    }
-    private fun isPinSet(): Boolean {
-        val sharedPreferences = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.contains("user_pin") // Kiểm tra mã PIN đã được lưu chưa
     }
 }
