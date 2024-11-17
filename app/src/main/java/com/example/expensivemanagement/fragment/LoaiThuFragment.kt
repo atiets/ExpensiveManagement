@@ -1,6 +1,7 @@
 package com.example.expensivemanagement.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.expensivemanagement.R
 import com.example.expensivemanagement.adapter.LoaiThuAdapter // Thay LoaiChiAdapter thành LoaiThuAdapter
 import com.example.expensivemanagement.model.LoaiThu // Thay LoaiChi thành LoaiThu
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class LoaiThuFragment : Fragment() {
@@ -51,18 +53,46 @@ class LoaiThuFragment : Fragment() {
     }
 
     private fun loadLoaiThu() {
-        database.addValueEventListener(object : ValueEventListener {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Lấy dữ liệu chỉ cho người dùng hiện tại
+        database.child(uid).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 loaiThuList.clear()
-                for (child in snapshot.children) {
-                    val loaiThu = child.getValue(LoaiThu::class.java)
-                    loaiThu?.let { loaiThuList.add(it) }
+                if (snapshot.exists()) {
+                    for (loaiThuSnapshot in snapshot.children) {
+                        val loaiThu = loaiThuSnapshot.getValue(LoaiThu::class.java)
+                        Log.d("LoaiThuFragment", "Loaded LoaiThu: $loaiThu")
+                        loaiThu?.let { loaiThuList.add(it) }
+                    }
+                    Log.d("LoaiThuFragment", "Data loaded, items count: ${loaiThuList.size}")
+                } else {
+                    Log.d("LoaiThuFragment", "No data found")
                 }
                 adapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
+                // Kiểm tra xem Fragment có còn đính kèm vào Activity không
+                if (isAdded) {
+                    try {
+                        // Chỉ thực hiện các thao tác nếu Fragment còn đính kèm
+                        val context = requireContext()
+                        // Thực hiện các thao tác khác với context, ví dụ: hiển thị thông báo lỗi
+                        Toast.makeText(context, "Error loading data: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("LoaiThuFragment", "Error loading data: ${error.message}")
+                    } catch (e: Exception) {
+                        // In lỗi nếu có bất kỳ ngoại lệ nào xảy ra trong quá trình xử lý
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Fragment không còn đính kèm, không thực hiện thao tác
+                    Log.e("LoaiThuFragment", "Fragment not attached to activity.")
+                }
             }
         })
     }
@@ -82,13 +112,45 @@ class LoaiThuFragment : Fragment() {
         btnThemLoaiThu.setOnClickListener {
             val name = edtNameLoaiThu.text.toString().trim()
             if (name.isNotEmpty()) {
-                val id = database.push().key ?: return@setOnClickListener
-                val newLoaiThu = LoaiThu(id, name)
-                database.child(id).setValue(newLoaiThu).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Thêm loại thu thành công!", Toast.LENGTH_SHORT).show()
+                // Lấy UID từ FirebaseAuth
+                val uid = FirebaseAuth.getInstance().currentUser?.uid
+                if (uid == null) {
+                    Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
                     alertDialog.dismiss()
+                    return@setOnClickListener
+                }
+
+                // Truy vấn bảng "User" để lấy userId
+                val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+                userRef.get().addOnSuccessListener { snapshot ->
+                    val userId = snapshot.child("userId").getValue(String::class.java)
+                    if (userId.isNullOrEmpty()) {
+                        Toast.makeText(requireContext(), "Không tìm thấy userId!", Toast.LENGTH_SHORT).show()
+                        alertDialog.dismiss()
+                        return@addOnSuccessListener
+                    }
+
+                    // Tạo ID cho LoaiThu
+                    val id = database.push().key ?: return@addOnSuccessListener
+
+                    val newLoaiThu = LoaiThu(id, name, userId)
+                    Log.d("AddLoaiThu", "Saving new LoaiThu: $newLoaiThu")
+
+                    // Lưu LoaiThu vào cơ sở dữ liệu
+                    database.child(userId).child(id).setValue(newLoaiThu).addOnSuccessListener {
+                        Log.d("AddLoaiThu", "LoaiThu added successfully with ID: $id")
+                        Toast.makeText(requireContext(), "Thêm loại thu thành công!", Toast.LENGTH_SHORT).show()
+                        alertDialog.dismiss()
+
+                        // Gọi lại phương thức tải lại dữ liệu sau khi thêm
+                        loadLoaiThu()  // Phương thức này cần được định nghĩa để tải lại dữ liệu từ Firebase
+                    }.addOnFailureListener { exception ->
+                        Log.e("AddLoaiThu", "Failed to add LoaiThu: ${exception.message}")
+                        Toast.makeText(requireContext(), "Thêm loại thu thất bại!", Toast.LENGTH_SHORT).show()
+                    }
                 }.addOnFailureListener {
-                    Toast.makeText(requireContext(), "Thêm loại thu thất bại!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Lỗi khi truy vấn userId: ${it.message}", Toast.LENGTH_SHORT).show()
+                    alertDialog.dismiss()
                 }
             } else {
                 edtNameLoaiThu.error = "Tên loại thu không được để trống!"
@@ -112,17 +174,24 @@ class LoaiThuFragment : Fragment() {
         val btnUpdateLoaiThu = dialogView.findViewById<Button>(R.id.btnUpdateLoaiThu)
         val btnHuyUpdateLoaiThu = dialogView.findViewById<Button>(R.id.btnHuyUpdateLoaiThu)
 
+        // Set the current name to the EditText
         edtUpdateNameLoaiThu.setText(loaiThu.name)
 
         btnUpdateLoaiThu.setOnClickListener {
             val updatedName = edtUpdateNameLoaiThu.text.toString().trim()
             if (updatedName.isNotEmpty()) {
                 val updatedLoaiThu = loaiThu.copy(name = updatedName)
-                database.child(loaiThu.id).setValue(updatedLoaiThu).addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Cập nhật loại thu thành công!", Toast.LENGTH_SHORT).show()
-                    alertDialog.dismiss()
-                }.addOnFailureListener {
-                    Toast.makeText(requireContext(), "Cập nhật loại thu thất bại!", Toast.LENGTH_SHORT).show()
+
+                // Ensure we access by userId
+                val uid = FirebaseAuth.getInstance().currentUser?.uid
+                if (uid != null) {
+                    val userRef = FirebaseDatabase.getInstance().getReference("LoaiThu").child(uid)
+                    userRef.child(loaiThu.id).setValue(updatedLoaiThu).addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Cập nhật loại thu thành công!", Toast.LENGTH_SHORT).show()
+                        alertDialog.dismiss()
+                    }.addOnFailureListener {
+                        Toast.makeText(requireContext(), "Cập nhật loại thu thất bại!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             } else {
                 edtUpdateNameLoaiThu.error = "Tên loại thu không được để trống!"
@@ -135,6 +204,16 @@ class LoaiThuFragment : Fragment() {
     }
 
     private fun deleteLoaiThu(id: String) {
-        database.child(id).removeValue()
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            // Ensure we are accessing the right user node
+            val userRef = FirebaseDatabase.getInstance().getReference("LoaiThu").child(uid)
+            userRef.child(id).removeValue().addOnSuccessListener {
+                Toast.makeText(requireContext(), "Xóa loại thu thành công!", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Xóa loại thu thất bại!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
 }
