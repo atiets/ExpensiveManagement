@@ -2,8 +2,10 @@ package com.example.expensivemanagement
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -14,6 +16,8 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var signupPassword: EditText
     private lateinit var confirmPassword: EditText
     private lateinit var signupButton: Button
+    private lateinit var eyeIcon: ImageView
+    private lateinit var eyeIconConfirm: ImageView
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +28,38 @@ class SignupActivity : AppCompatActivity() {
         signupEmail = findViewById(R.id.editTextEmail)
         signupPassword = findViewById(R.id.editTextPassword)
         confirmPassword = findViewById(R.id.editTextConfirmPassword)
+        eyeIcon = findViewById(R.id.iv_toggle_password)
+        eyeIconConfirm = findViewById(R.id.iv_toggle_cfPassword)
         signupButton = findViewById(R.id.bt_signup)
         auth = FirebaseAuth.getInstance()
+
+        var isPasswordVisible = false
+        var isConfirmPasswordVisible = false
+
+        // Thêm sự kiện cho icon mắt để chuyển đổi ẩn/hiện mật khẩu
+        eyeIcon.setOnClickListener {
+            if (isPasswordVisible) {
+                signupPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                eyeIcon.setImageResource(R.drawable.visibility_off)
+            } else {
+                signupPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                eyeIcon.setImageResource(R.drawable.visibility_on)
+            }
+            isPasswordVisible = !isPasswordVisible
+            signupPassword.setSelection(signupPassword.text.length)  // Giữ con trỏ ở cuối
+        }
+
+        eyeIconConfirm.setOnClickListener {
+            if (isConfirmPasswordVisible) {
+                confirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                eyeIconConfirm.setImageResource(R.drawable.visibility_off)
+            } else {
+                confirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                eyeIconConfirm.setImageResource(R.drawable.visibility_on)
+            }
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            confirmPassword.setSelection(confirmPassword.text.length)  // Giữ con trỏ ở cuối
+        }
 
         signupButton.setOnClickListener {
             if (validateEmail() && validatePassword() && validateConfirmPassword()) {
