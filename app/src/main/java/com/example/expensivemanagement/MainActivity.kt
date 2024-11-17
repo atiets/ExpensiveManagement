@@ -7,9 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.FragmentManager
 import com.example.expensivemanagement.fragment.ChartFragment
 import com.example.expensivemanagement.fragment.ChiFragment
 import com.example.expensivemanagement.fragment.DateFragment
@@ -47,6 +44,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
 
+        if (savedInstanceState == null) { // Kiểm tra nếu activity được tạo lần đầu
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ChiFragment())
+                .commit()
+            navigationView.setCheckedItem(R.id.nav_chi)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
