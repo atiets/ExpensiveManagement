@@ -42,10 +42,28 @@
         android:textColorLink="#FA216C" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextEmail"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:drawableLeft="@drawable/signup_username"
+        android:hint=" Username"
+        android:textColor="@android:color/black"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColorHint="#51000000"
+        android:textColorHighlight="#FF4E8B"
+        android:textColorLink="#FA216C" />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
         android:layout_centerVertical="true"
         android:layout_marginTop="15dp"
         android:layout_marginStart="20dp"

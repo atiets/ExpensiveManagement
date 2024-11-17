@@ -8,13 +8,16 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.expensivemanagement.Model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.util.regex.Pattern
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var signupEmail: EditText
     private lateinit var signupPassword: EditText
     private lateinit var confirmPassword: EditText
+    private lateinit var userName: EditText
     private lateinit var signupButton: Button
     private lateinit var eyeIcon: ImageView
     private lateinit var eyeIconConfirm: ImageView
@@ -24,8 +27,8 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Khởi tạo các view
         signupEmail = findViewById(R.id.editTextEmail)
+        userName = findViewById(R.id.username)
         signupPassword = findViewById(R.id.editTextPassword)
         confirmPassword = findViewById(R.id.editTextConfirmPassword)
         eyeIcon = findViewById(R.id.iv_toggle_password)
@@ -125,12 +128,24 @@ class SignupActivity : AppCompatActivity() {
     private fun registerUser() {
         val email = signupEmail.text.toString().trim()
         val password = signupPassword.text.toString().trim()
+        val name = userName.text.toString()
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+                val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                val user = User(userId, email,  "user", name)
+
+                val database = FirebaseDatabase.getInstance().reference
+                database.child("user").child(userId).setValue(user).addOnCompleteListener { databaseTask ->
+                    if (databaseTask.isSuccessful) {
+                        Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Lỗi lưu dữ liệu người dùng!", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } else {
                 Toast.makeText(this, task.exception?.message ?: "Đăng ký thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show()
             }
