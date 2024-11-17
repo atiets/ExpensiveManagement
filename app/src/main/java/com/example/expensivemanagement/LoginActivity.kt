@@ -3,9 +3,11 @@ package com.example.expensivemanagement
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -31,7 +33,25 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.bt_login)
         signupRedirectText = findViewById(R.id.tv_signup)
         forgotPasswordRedirectText = findViewById(R.id.tv_forgotPassword)
+        val passwordToggle: ImageView = findViewById(R.id.iv_toggle_password)
         auth = FirebaseAuth.getInstance()
+
+        var isPasswordVisible = false
+
+        passwordToggle.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                // Hiển thị mật khẩu
+                loginPassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                passwordToggle.setImageResource(R.drawable.visibility_on) // Cập nhật biểu tượng
+            } else {
+                // Ẩn mật khẩu
+                loginPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                passwordToggle.setImageResource(R.drawable.visibility_off) // Cập nhật biểu tượng
+            }
+            // Đảm bảo con trỏ không bị mất vị trí khi chuyển đổi
+            loginPassword.setSelection(loginPassword.text?.length ?: 0)
+        }
 
         loginButton.setOnClickListener {
             if (validateEmail() && validatePassword()) {

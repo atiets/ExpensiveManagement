@@ -43,22 +43,32 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
+        android:layout_width="376dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextEmail"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="40dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="600dp"
         android:drawableLeft="@drawable/login_password"
         android:hint=" Password"
         android:inputType="textPassword"
-        android:textColor="@android:color/black"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:textColorHint="#51000000"
+        android:textColor="@android:color/black"
         android:textColorHighlight="#FF4E8B"
+        android:textColorHint="#51000000"
         android:textColorLink="#FA216C" />
+
+    <ImageView
+        android:id="@+id/iv_toggle_password"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@id/editTextPassword"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/visibility_off"
+        android:contentDescription="Toggle password visibility" />
+
 
     <Button
         android:id="@+id/bt_login"
@@ -98,5 +108,4 @@
         android:textStyle="bold"
         android:layout_marginTop="15dp"
         android:gravity="center"/>
-
 </RelativeLayout>
