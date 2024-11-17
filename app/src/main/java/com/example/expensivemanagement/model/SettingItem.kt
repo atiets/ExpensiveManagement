@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Model
+package com.example.expensivemanagement.model
 
 data class SettingItem(
     val iconResId: Int,

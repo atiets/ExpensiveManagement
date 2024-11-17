@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Fragment
+package com.example.expensivemanagement.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensivemanagement.AccountActivity
-import com.example.expensivemanagement.Adapter.SettingsAdapter
-import com.example.expensivemanagement.Model.SettingItem
+import com.example.expensivemanagement.adapter.SettingsAdapter
+import com.example.expensivemanagement.model.SettingItem
 import com.example.expensivemanagement.PasscodeActivity
 import com.example.expensivemanagement.R
 
