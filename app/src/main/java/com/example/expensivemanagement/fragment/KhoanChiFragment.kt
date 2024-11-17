@@ -2,6 +2,7 @@ package com.example.expensivemanagement.fragment
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import com.example.expensivemanagement.adapter.KhoanChiAdapter
 import com.example.expensivemanagement.adapter.SpLoaiChiAdapter
 import com.example.expensivemanagement.model.KhoanChi
 import com.example.expensivemanagement.model.LoaiChi
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -58,12 +60,25 @@ class KhoanChiFragment : Fragment() {
     }
 
     private fun loadKhoanChiData() {
-        database.addValueEventListener(object : ValueEventListener {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Fetch data only for the current user
+        val userRef = FirebaseDatabase.getInstance().getReference("KhoanChi").child(uid)
+        userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 khoanChiList.clear()
-                for (dataSnapshot in snapshot.children) {
-                    val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
-                    khoanChi?.let { khoanChiList.add(it) }
+                if (snapshot.exists()) {
+                    for (dataSnapshot in snapshot.children) {
+                        val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
+                        khoanChi?.let { khoanChiList.add(it) }
+                    }
+                    Log.d("KhoanChiFragment", "Data loaded, items count: ${khoanChiList.size}")
+                } else {
+                    Log.d("KhoanChiFragment", "No data found for the user")
                 }
 
                 // Set up the adapter
@@ -75,34 +90,86 @@ class KhoanChiFragment : Fragment() {
                     editKhoanChi(khoanChi)
                 }, { khoanChi ->
                     // Handle view click (view detail)
-                    viewKhoanChiDetails(khoanChi)
+                    viewKhoanChiDetails(khoanChi.id)
                 })
                 recyclerView.adapter = adapter
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(activity, "Error loading data", Toast.LENGTH_SHORT).show()
+                // Ensure operations only occur if the fragment is attached
+                if (isAdded) {
+                    try {
+                        val context = requireContext()
+                        Toast.makeText(context, "Error loading data: ${error.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("KhoanChiFragment", "Error loading data: ${error.message}")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                } else {
+                    Log.e("KhoanChiFragment", "Fragment not attached to activity.")
+                }
             }
         })
     }
 
-    private fun viewKhoanChiDetails(khoanChi: KhoanChi) {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.diag_read_chi, null)
-        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setView(dialogView)
+    private fun viewKhoanChiDetails(khoanChiId: String) {
+        // Log để kiểm tra ID khoản chi
+        Log.d("KhoanChiDetails", "KhoanChiId: $khoanChiId")
 
-        val alertDialog = builder.create()
-        alertDialog.show()
+        // Get the current user ID
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            Log.d("KhoanChiDetails", "User ID: $uid")
 
-        // Set data to the views
-        dialogView.findViewById<TextView>(R.id.txtKhoanChi).text = khoanChi.name
-        dialogView.findViewById<TextView>(R.id.txtLoaiChi).text = khoanChi.loaiChi
-        dialogView.findViewById<TextView>(R.id.txtTienChi).text = khoanChi.soTien.toString()
-        dialogView.findViewById<TextView>(R.id.txtNgayChi).text = khoanChi.thoiDiemChi
+            val userRef = FirebaseDatabase.getInstance().getReference("KhoanChi").child(uid)
 
-        // Handle the close button
-        dialogView.findViewById<Button>(R.id.btnThoatChiTiet).setOnClickListener {
-            alertDialog.dismiss()
+            // Log to confirm the reference to the right path in Firebase
+            Log.d("KhoanChiDetails", "Reference Path: KhoanChi/$uid/$khoanChiId")
+
+            // Retrieve the specific KhoanChi details using its ID
+            userRef.child(khoanChiId).get().addOnSuccessListener { dataSnapshot ->
+                // Log the raw snapshot data to check if it's null or missing
+                Log.d("KhoanChiDetails", "Data snapshot: ${dataSnapshot.value}")
+
+                // Check if dataSnapshot exists and contains valid data
+                if (dataSnapshot.exists()) {
+                    val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
+                    if (khoanChi != null) {
+                        Log.d("KhoanChiDetails", "KhoanChi details: $khoanChi")
+
+                        // Inflate the details dialog layout
+                        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.diag_read_chi, null)
+                        val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setView(dialogView)
+
+                        val alertDialog = builder.create()
+                        alertDialog.show()
+
+                        // Set data to the views
+                        dialogView.findViewById<TextView>(R.id.txtKhoanChi).text = khoanChi.name
+                        dialogView.findViewById<TextView>(R.id.txtLoaiChi).text = khoanChi.loaiChi
+                        dialogView.findViewById<TextView>(R.id.txtTienChi).text = khoanChi.soTien.toString()
+                        dialogView.findViewById<TextView>(R.id.txtNgayChi).text = khoanChi.thoiDiemChi
+
+                        // Handle the close button
+                        dialogView.findViewById<Button>(R.id.btnThoatChiTiet).setOnClickListener {
+                            alertDialog.dismiss()
+                        }
+                    } else {
+                        Log.d("KhoanChiDetails", "KhoanChi data is null or malformed")
+                        Toast.makeText(requireContext(), "Không tìm thấy thông tin khoản chi!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.d("KhoanChiDetails", "KhoanChi data not found at path KhoanChi/$uid/$khoanChiId")
+                    Toast.makeText(requireContext(), "Không tìm thấy thông tin khoản chi!", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("KhoanChiDetails", "Error retrieving KhoanChi details", exception)
+                Toast.makeText(requireContext(), "Lỗi khi tải chi tiết khoản chi!", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Log.d("KhoanChiDetails", "User not logged in")
+            Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -154,41 +221,64 @@ class KhoanChiFragment : Fragment() {
             val name = edtNameChi.text.toString().trim()
             val tienChi = edtTienChi.text.toString().trim()
             val ngayChi = edtThemNgayChi.text.toString().trim()
-            val loaiChi = spinnerLoaiChi.selectedItem as? LoaiChi // Lấy đối tượng LoaiChi được chọn
+            val loaiChi = spinnerLoaiChi.selectedItem as? LoaiChi
 
-            // Kiểm tra đầu vào
             if (name.isEmpty() || tienChi.isEmpty() || ngayChi.isEmpty() || loaiChi == null) {
                 Toast.makeText(requireContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Kiểm tra số tiền
             val soTien = tienChi.toIntOrNull()
             if (soTien == null || soTien <= 0) {
                 Toast.makeText(requireContext(), "Số tiền không hợp lệ!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val id = database.push().key ?: return@setOnClickListener
-
-            // Tạo đối tượng KhoanChi
-            val newKhoanChi = KhoanChi(
-                id = id,
-                name = name,
-                loaiChi = loaiChi.getNameLoaiChi(), // Trả về tên LoaiChi dưới dạng String
-                thoiDiemChi = ngayChi,
-                soTien = soTien,
-                danhGia = 0,
-                deleteFlag = 0,
-                idLoaiChi = loaiChi.getIdLoaiChi()
-            )
-
-            // Thêm vào Firebase
-            database.child(id).setValue(newKhoanChi).addOnSuccessListener {
-                Toast.makeText(requireContext(), "Thêm khoản chi thành công!", Toast.LENGTH_SHORT).show()
+            // Lấy UID từ FirebaseAuth
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid == null) {
+                Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
                 alertDialog.dismiss()
+                return@setOnClickListener
+            }
+
+            // Truy vấn bảng "User" để lấy userId
+            val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+            userRef.get().addOnSuccessListener { snapshot ->
+                val userId = snapshot.child("userId").getValue(Int::class.java)?.toString()
+                if (userId.isNullOrEmpty()) {
+                    Toast.makeText(requireContext(), "Không tìm thấy userId!", Toast.LENGTH_SHORT).show()
+                    alertDialog.dismiss()
+                    return@addOnSuccessListener
+                }
+
+                val id = database.push().key ?: return@addOnSuccessListener
+
+                // Tạo đối tượng KhoanChi
+                val newKhoanChi = KhoanChi(
+                    id = id,
+                    name = name,
+                    loaiChi = loaiChi.getNameLoaiChi(),
+                    thoiDiemChi = ngayChi,
+                    soTien = soTien,
+                    danhGia = 0,
+                    deleteFlag = 0,
+                    idLoaiChi = loaiChi.getIdLoaiChi()
+                )
+
+                // Thêm vào Firebase
+                database.child(userId).child(id).setValue(newKhoanChi).addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Thêm khoản chi thành công!", Toast.LENGTH_SHORT).show()
+                    alertDialog.dismiss()
+
+                    // Gọi lại phương thức tải dữ liệu nếu cần
+                    loadKhoanChiData()
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), "Thêm khoản chi thất bại!", Toast.LENGTH_SHORT).show()
+                }
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Thêm khoản chi thất bại!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Lỗi khi truy vấn userId: ${it.message}", Toast.LENGTH_SHORT).show()
+                alertDialog.dismiss()
             }
         }
 
@@ -199,14 +289,34 @@ class KhoanChiFragment : Fragment() {
     }
 
     private fun deleteKhoanChi(khoanChi: KhoanChi) {
-        // Firebase delete operation
-        database.child(khoanChi.id).removeValue().addOnCompleteListener {
-            Toast.makeText(activity, "Khoan Chi deleted", Toast.LENGTH_SHORT).show()
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Truy vấn để lấy userId từ bảng "user"
+        val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
+        userRef.get().addOnSuccessListener { snapshot ->
+            val userId = snapshot.child("userId").getValue(String::class.java)
+            if (userId.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), "Không tìm thấy userId!", Toast.LENGTH_SHORT).show()
+                return@addOnSuccessListener
+            }
+
+            // Thực hiện xóa KhoanChi theo userId
+            val khoanChiRef = FirebaseDatabase.getInstance().getReference("KhoanChi").child(userId)
+            khoanChiRef.child(khoanChi.id).removeValue().addOnSuccessListener {
+                Toast.makeText(requireContext(), "Xóa khoản chi thành công!", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Xóa khoản chi thất bại!", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(), "Lỗi khi truy vấn userId: ${it.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun editKhoanChi(khoanChi: KhoanChi) {
-        // Inflate the edit dialog layout
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.diag_update_chi, null)
         val builder = androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -214,30 +324,30 @@ class KhoanChiFragment : Fragment() {
         val alertDialog = builder.create()
         alertDialog.show()
 
-        // Get references to the views
+        // Tham chiếu tới các view
         val edtNgayChi = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edtupdateNgayChi)
         val edtNameChi = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edtupdateNameChi)
         val edtTienChi = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edtupdateTienChi)
         val spinnerLoaiChi = dialogView.findViewById<Spinner>(R.id.spupdateLoaiChi)
 
-        // Set current values from KhoanChi
+        // Đặt giá trị hiện tại của KhoanChi
         edtNgayChi.setText(khoanChi.thoiDiemChi)
         edtNameChi.setText(khoanChi.name)
         edtTienChi.setText(khoanChi.soTien.toString())
 
-        // Load LoaiChi list from Firebase and set the selected item
+        // Tải danh sách LoạiChi và chọn loại chi hiện tại
         getLoaiChiList { loaiChiList ->
             val loaiChiAdapter = SpLoaiChiAdapter(requireContext(), loaiChiList)
             spinnerLoaiChi.adapter = loaiChiAdapter
 
-            // Set the spinner to the current LoaiChi
+            // Đặt spinner vào loại chi hiện tại
             loaiChiList.find { it.getIdLoaiChi() == khoanChi.idLoaiChi }?.let { selectedLoaiChi ->
                 val spinnerPosition = loaiChiList.indexOf(selectedLoaiChi)
                 spinnerLoaiChi.setSelection(spinnerPosition)
             }
         }
 
-        // Set date picker on edit text for selecting a date
+        // Hiển thị DatePicker khi nhấn vào edtNgayChi
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         edtNgayChi.setOnClickListener {
@@ -255,7 +365,7 @@ class KhoanChiFragment : Fragment() {
             datePickerDialog.show()
         }
 
-        // Handle save button click
+        // Xử lý khi nhấn nút lưu
         val btnSave = dialogView.findViewById<Button>(R.id.btnCapNhatKhoanChi)
         btnSave.setOnClickListener {
             val updatedName = edtNameChi.text.toString().trim()
@@ -274,28 +384,33 @@ class KhoanChiFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Create the updated KhoanChi object
             val updatedKhoanChi = KhoanChi(
                 id = khoanChi.id,
                 name = updatedName,
                 loaiChi = updatedLoaiChi.getNameLoaiChi(),
                 thoiDiemChi = updatedNgay,
                 soTien = updatedTienChi,
-                danhGia = khoanChi.danhGia, // Keep the existing rating
-                deleteFlag = khoanChi.deleteFlag, // Keep the existing delete flag
+                danhGia = khoanChi.danhGia,
+                deleteFlag = khoanChi.deleteFlag,
                 idLoaiChi = updatedLoaiChi.getIdLoaiChi()
             )
 
-            // Update the KhoanChi in Firebase
-            database.child(khoanChi.id).setValue(updatedKhoanChi).addOnSuccessListener {
-                Toast.makeText(requireContext(), "Cập nhật khoản chi thành công!", Toast.LENGTH_SHORT).show()
-                alertDialog.dismiss()
-            }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Cập nhật khoản chi thất bại!", Toast.LENGTH_SHORT).show()
+            // Xác định uid người dùng
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            if (uid != null) {
+                val userRef = FirebaseDatabase.getInstance().getReference("KhoanChi").child(uid)
+                userRef.child(khoanChi.id).setValue(updatedKhoanChi).addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Cập nhật khoản chi thành công!", Toast.LENGTH_SHORT).show()
+                    alertDialog.dismiss()
+                }.addOnFailureListener {
+                    Toast.makeText(requireContext(), "Cập nhật khoản chi thất bại!", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Handle cancel button click
+        // Xử lý khi nhấn nút hủy
         val btnCancel = dialogView.findViewById<Button>(R.id.btnHuyCapNhatChi)
         btnCancel.setOnClickListener {
             alertDialog.dismiss()
@@ -303,22 +418,35 @@ class KhoanChiFragment : Fragment() {
     }
 
     private fun getLoaiChiList(callback: (ArrayList<LoaiChi>) -> Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("LoaiChi")
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid == null) {
+            // Trường hợp không đăng nhập
+            Toast.makeText(requireContext(), "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
+            callback(ArrayList())
+            return
+        }
+
+        // Truy vấn dữ liệu loại chi theo uid
+        val database = FirebaseDatabase.getInstance().getReference("LoaiChi").child(uid)
         val loaiChiList = ArrayList<LoaiChi>()
 
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                loaiChiList.clear() // Đảm bảo danh sách luôn được làm mới
+                loaiChiList.clear() // Đảm bảo danh sách được làm mới
+
                 for (data in snapshot.children) {
                     val loaiChi = data.getValue(LoaiChi::class.java)
                     if (loaiChi != null) {
                         loaiChiList.add(loaiChi)
                     }
                 }
-                callback(loaiChiList) // Trả về danh sách qua callback
+
+                // Gọi callback để trả danh sách loại chi
+                callback(loaiChiList)
             }
 
             override fun onCancelled(error: DatabaseError) {
+                // Xử lý khi có lỗi từ Firebase
                 Toast.makeText(requireContext(), "Lỗi khi tải danh sách loại chi: ${error.message}", Toast.LENGTH_SHORT).show()
                 callback(ArrayList()) // Trả về danh sách rỗng trong trường hợp lỗi
             }
