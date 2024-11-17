@@ -48,6 +48,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // Nếu người dùng đã đăng nhập, chuyển đến MainActivity
+            startActivity(Intent(this, MainActivity::class.java))
+            finish() // Không cho phép quay lại LoginActivity
+        }
+    }
+
     private fun showForgotPasswordDialog() {
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.diag_forgot, null)
