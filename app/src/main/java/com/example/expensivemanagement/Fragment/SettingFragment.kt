@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.expensivemanagement.AccountActivity
 import com.example.expensivemanagement.Adapter.SettingsAdapter
 import com.example.expensivemanagement.Model.SettingItem
 import com.example.expensivemanagement.PasscodeActivity
@@ -26,7 +27,9 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
         val settings = listOf(
             SettingItem(R.drawable.ic_pin, "Đặt mã PIN"),
             SettingItem(R.drawable.ic_personalize, "Cá nhân hóa"),
-            SettingItem(R.drawable.ic_backup, "Back Up bằng Google Drive")
+            SettingItem(R.drawable.ic_notify,"Cài đặt thông báo"),
+            SettingItem(R.drawable.ic_account,"Chỉnh sửa thông tin cá nhân"),
+            SettingItem(R.drawable.ic_themes,"Chế độ")
         )
 
         val adapter = SettingsAdapter(settings) { position ->
@@ -42,7 +45,14 @@ class SettingFragment : Fragment(R.layout.fragment_setting) {
                 }
 
                 2 -> {
-                    // Xử lý sự kiện cho "Back Up bằng Google Drive"
+
+                }
+                3 ->{
+                    val intent = Intent(requireContext(), AccountActivity::class.java)
+                    startActivity(intent)
+                }
+                4 -> {
+
                 }
             }
         }

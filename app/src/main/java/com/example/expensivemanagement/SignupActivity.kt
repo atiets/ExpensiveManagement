@@ -2,30 +2,67 @@ package com.example.expensivemanagement
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.expensivemanagement.Model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.util.regex.Pattern
 
 class SignupActivity : AppCompatActivity() {
     private lateinit var signupEmail: EditText
     private lateinit var signupPassword: EditText
     private lateinit var confirmPassword: EditText
+    private lateinit var userName: EditText
     private lateinit var signupButton: Button
+    private lateinit var eyeIcon: ImageView
+    private lateinit var eyeIconConfirm: ImageView
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Khởi tạo các view
         signupEmail = findViewById(R.id.editTextEmail)
+        userName = findViewById(R.id.username)
         signupPassword = findViewById(R.id.editTextPassword)
         confirmPassword = findViewById(R.id.editTextConfirmPassword)
+        eyeIcon = findViewById(R.id.iv_toggle_password)
+        eyeIconConfirm = findViewById(R.id.iv_toggle_cfPassword)
         signupButton = findViewById(R.id.bt_signup)
         auth = FirebaseAuth.getInstance()
+
+        var isPasswordVisible = false
+        var isConfirmPasswordVisible = false
+
+        // Thêm sự kiện cho icon mắt để chuyển đổi ẩn/hiện mật khẩu
+        eyeIcon.setOnClickListener {
+            if (isPasswordVisible) {
+                signupPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                eyeIcon.setImageResource(R.drawable.visibility_off)
+            } else {
+                signupPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                eyeIcon.setImageResource(R.drawable.visibility_on)
+            }
+            isPasswordVisible = !isPasswordVisible
+            signupPassword.setSelection(signupPassword.text.length)  // Giữ con trỏ ở cuối
+        }
+
+        eyeIconConfirm.setOnClickListener {
+            if (isConfirmPasswordVisible) {
+                confirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                eyeIconConfirm.setImageResource(R.drawable.visibility_off)
+            } else {
+                confirmPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                eyeIconConfirm.setImageResource(R.drawable.visibility_on)
+            }
+            isConfirmPasswordVisible = !isConfirmPasswordVisible
+            confirmPassword.setSelection(confirmPassword.text.length)  // Giữ con trỏ ở cuối
+        }
 
         signupButton.setOnClickListener {
             if (validateEmail() && validatePassword() && validateConfirmPassword()) {
@@ -91,12 +128,24 @@ class SignupActivity : AppCompatActivity() {
     private fun registerUser() {
         val email = signupEmail.text.toString().trim()
         val password = signupPassword.text.toString().trim()
+        val name = userName.text.toString()
 
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+                val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                val user = User(userId, email,  "user", name)
+
+                val database = FirebaseDatabase.getInstance().reference
+                database.child("user").child(userId).setValue(user).addOnCompleteListener { databaseTask ->
+                    if (databaseTask.isSuccessful) {
+                        Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Lỗi lưu dữ liệu người dùng!", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } else {
                 Toast.makeText(this, task.exception?.message ?: "Đăng ký thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show()
             }

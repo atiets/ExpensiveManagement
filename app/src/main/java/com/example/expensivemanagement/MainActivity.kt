@@ -10,12 +10,12 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.FragmentManager
+import com.example.expensivemanagement.Fragment.SettingFragment
 import com.example.expensivemanagement.fragment.ChartFragment
 import com.example.expensivemanagement.fragment.ChiFragment
 import com.example.expensivemanagement.fragment.DateFragment
 import com.example.expensivemanagement.fragment.InforFragment
 import com.example.expensivemanagement.fragment.RemindFragment
-import com.example.expensivemanagement.fragment.SettingFragment
 import com.example.expensivemanagement.fragment.ThuFragment
 import com.google.android.material.navigation.NavigationView
 
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else if (itemId == R.id.nav_remind) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, RemindFragment()).commit()
-        } else if (itemId == R.id.nav_chart) {
+        } else if (itemId == R.id.nav_setting) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingFragment()).commit()
         } else if (itemId == R.id.nav_about) {

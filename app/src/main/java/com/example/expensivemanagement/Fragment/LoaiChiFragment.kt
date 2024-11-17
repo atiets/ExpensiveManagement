@@ -1,6 +1,8 @@
 package com.example.expensivemanagement.fragment
 
+
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,10 +62,25 @@ class LoaiChiFragment : Fragment() {
                 }
                 adapter.notifyDataSetChanged()
             }
-
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Failed to load data", Toast.LENGTH_SHORT).show()
+                // Kiểm tra xem Fragment có còn đính kèm vào Activity không
+                if (isAdded) {
+                    try {
+                        // Chỉ thực hiện các thao tác nếu Fragment còn đính kèm
+                        val context = requireContext() // An toàn hơn khi gọi requireContext() sau khi kiểm tra isAdded()
+                        // Thực hiện các thao tác khác với context, ví dụ: hiển thị thông báo lỗi
+                        // Ví dụ: Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        // In lỗi nếu có bất kỳ ngoại lệ nào xảy ra trong quá trình xử lý
+                        e.printStackTrace()
+                    }
+                } else {
+                    // Fragment không còn đính kèm, không thực hiện thao tác
+                    Log.e("LoaiChiFragment", "Fragment not attached to activity.")
+                    // Bạn có thể thêm thông báo Toast hoặc các biện pháp xử lý khác ở đây nếu cần
+                }
             }
+
         })
     }
 

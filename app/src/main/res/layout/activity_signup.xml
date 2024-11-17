@@ -42,10 +42,28 @@
         android:textColorLink="#FA216C" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextEmail"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:drawableLeft="@drawable/signup_username"
+        android:hint=" Username"
+        android:textColor="@android:color/black"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColorHint="#51000000"
+        android:textColorHighlight="#FF4E8B"
+        android:textColorLink="#FA216C" />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
         android:layout_centerVertical="true"
         android:layout_marginTop="15dp"
         android:layout_marginStart="20dp"
@@ -58,6 +76,18 @@
         android:textColorHint="#51000000"
         android:textColorHighlight="#FF4E8B"
         android:textColorLink="#FA216C" />
+
+    <ImageView
+        android:id="@+id/iv_toggle_password"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/editTextEmail"
+        android:layout_marginTop="50dp"
+        android:layout_alignEnd="@id/editTextPassword"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/visibility_off"
+        android:contentDescription="Toggle password visibility" />
 
     <EditText
         android:id="@+id/editTextConfirmPassword"
@@ -78,6 +108,17 @@
         android:textColorLink="#FA216C"
         android:inputType="textPassword" />
 
+    <ImageView
+        android:id="@+id/iv_toggle_cfPassword"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/iv_toggle_password"
+        android:layout_marginTop="65dp"
+        android:layout_alignEnd="@id/editTextConfirmPassword"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/visibility_off"
+        android:contentDescription="Toggle password visibility" />
 
     <Button
         android:id="@+id/bt_signup"
