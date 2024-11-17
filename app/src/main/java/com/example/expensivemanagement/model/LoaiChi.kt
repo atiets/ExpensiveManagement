@@ -2,7 +2,8 @@ package com.example.expensivemanagement.model
 
 data class LoaiChi(
     var id: String = "",
-    var name: String = ""
+    var name: String = "",
+    var userId: String = ""
 ) {
     // Trả về tên của LoaiChi
     fun getNameLoaiChi(): String {

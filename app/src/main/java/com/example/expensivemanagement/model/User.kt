@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Model
+package com.example.expensivemanagement.model
 
 data class User(
     val userId: String = "",

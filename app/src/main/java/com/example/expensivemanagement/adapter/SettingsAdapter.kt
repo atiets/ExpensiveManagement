@@ -1,4 +1,4 @@
-package com.example.expensivemanagement.Adapter
+package com.example.expensivemanagement.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.expensivemanagement.Model.SettingItem
+import com.example.expensivemanagement.model.SettingItem
 import com.example.expensivemanagement.R
 
 class SettingsAdapter(

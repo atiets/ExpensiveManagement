@@ -1,16 +1,16 @@
 package com.example.expensivemanagement
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.FragmentManager
-import com.example.expensivemanagement.Fragment.SettingFragment
+import com.example.expensivemanagement.fragment.SettingFragment
 import com.example.expensivemanagement.fragment.ChartFragment
 import com.example.expensivemanagement.fragment.ChiFragment
 import com.example.expensivemanagement.fragment.DateFragment
@@ -18,6 +18,7 @@ import com.example.expensivemanagement.fragment.InforFragment
 import com.example.expensivemanagement.fragment.RemindFragment
 import com.example.expensivemanagement.fragment.ThuFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,6 +48,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(this)
 
+        if (savedInstanceState == null) { // Kiểm tra nếu activity được tạo lần đầu
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ChiFragment())
+                .commit()
+            navigationView.setCheckedItem(R.id.nav_chi)
+        }
+
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -73,9 +81,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, InforFragment()).commit()
         } else if (itemId == R.id.nav_logout) {
-//            thongBaoLogOut()
+            thongBaoLogOut()
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun thongBaoLogOut() {
+        val builder = AlertDialog.Builder(this@MainActivity)
+        builder.setMessage("Bạn có muốn đăng xuất?")
+        builder.setCancelable(true)
+        builder.setPositiveButton("Yes") { dialog, id ->
+            FirebaseAuth.getInstance().signOut()
+            Toast.makeText(this@MainActivity, "Đăng xuất thành công", Toast.LENGTH_SHORT).show()
+            // Chuyển đến màn hình đăng nhập
+            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish()  // Kết thúc MainActivity để không quay lại
+            dialog.cancel()
+        }
+        builder.setNegativeButton("No") { dialog, id ->
+            dialog.cancel()  // Đóng hộp thoại mà không làm gì
+        }
+        val alertDialog = builder.create()
+        alertDialog.show()  // Hiển thị hộp thoại
     }
 }
