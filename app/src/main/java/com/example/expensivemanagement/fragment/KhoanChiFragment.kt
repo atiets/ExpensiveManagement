@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensivemanagement.R
 import com.example.expensivemanagement.adapter.KhoanChiAdapter
 import com.example.expensivemanagement.adapter.SpLoaiChiAdapter
+import com.example.expensivemanagement.adapter.SpLoaiThuAdapter
 import com.example.expensivemanagement.model.KhoanChi
 import com.example.expensivemanagement.model.LoaiChi
+import com.example.expensivemanagement.model.LoaiThu
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
@@ -214,6 +216,14 @@ class KhoanChiFragment : Fragment() {
         getLoaiChiList { loaiChiList ->
             val loaiChiAdapter = SpLoaiChiAdapter(requireContext(), loaiChiList)
             spinnerLoaiChi.adapter = loaiChiAdapter
+
+            // Kiểm tra nếu chỉ có mục mặc định trong danh sách
+            if (loaiChiList.size == 1 && loaiChiList[0].id == "0") {
+                spinnerLoaiChi.isEnabled = false // Vô hiệu hóa spinner nếu không có loại chi thật
+                Toast.makeText(requireContext(), "Hãy thêm loại chi trước khi chỉnh sửa!", Toast.LENGTH_SHORT).show()
+            } else {
+                spinnerLoaiChi.isEnabled = true // Bật lại spinner nếu danh sách hợp lệ
+            }
         }
 
         // Xử lý sự kiện khi nhấn nút "Thêm Loại Chi"
@@ -439,6 +449,17 @@ class KhoanChiFragment : Fragment() {
                     if (loaiChi != null) {
                         loaiChiList.add(loaiChi)
                     }
+                }
+
+                if (loaiChiList.isEmpty()) {
+                    // Thêm mục mặc định nếu danh sách rỗng
+                    loaiChiList.add(
+                        LoaiChi(
+                            id = "0",
+                            name = "Chưa có loại chi"
+                        )
+                    )
+                    Toast.makeText(requireContext(), "Hiện tại chưa có loại chi nào, hãy thêm loại chi trước.", Toast.LENGTH_SHORT).show()
                 }
 
                 // Gọi callback để trả danh sách loại chi
