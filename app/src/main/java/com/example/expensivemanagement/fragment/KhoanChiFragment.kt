@@ -245,7 +245,7 @@ class KhoanChiFragment : Fragment() {
             // Truy vấn bảng "User" để lấy userId
             val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
             userRef.get().addOnSuccessListener { snapshot ->
-                val userId = snapshot.child("userId").getValue(Int::class.java)?.toString()
+                val userId = snapshot.child("userId").getValue(String::class.java)
                 if (userId.isNullOrEmpty()) {
                     Toast.makeText(requireContext(), "Không tìm thấy userId!", Toast.LENGTH_SHORT).show()
                     alertDialog.dismiss()
