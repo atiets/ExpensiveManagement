@@ -214,6 +214,14 @@ class KhoanThuFragment : Fragment() {
         getLoaiThuList { loaiThuList ->
             val loaiThuAdapter = SpLoaiThuAdapter(requireContext(), loaiThuList)
             spinnerLoaiThu.adapter = loaiThuAdapter
+
+            // Kiểm tra nếu chỉ có mục mặc định trong danh sách
+            if (loaiThuList.size == 1 && loaiThuList[0].id == "0") {
+                spinnerLoaiThu.isEnabled = false // Vô hiệu hóa spinner nếu không có loại thu thật
+                Toast.makeText(requireContext(), "Hãy thêm loại thu trước khi chỉnh sửa!", Toast.LENGTH_SHORT).show()
+            } else {
+                spinnerLoaiThu.isEnabled = true // Bật lại spinner nếu danh sách hợp lệ
+            }
         }
 
         // Handle click event for "Add KhoanThu" button
@@ -441,6 +449,17 @@ class KhoanThuFragment : Fragment() {
                     if (loaiThu != null) {
                         loaiThuList.add(loaiThu)
                     }
+                }
+
+                if (loaiThuList.isEmpty()) {
+                    // Thêm mục mặc định nếu danh sách rỗng
+                    loaiThuList.add(
+                        LoaiThu(
+                            id = "0",
+                            name = "Chưa có loại thu"
+                        )
+                    )
+                    Toast.makeText(requireContext(), "Hiện tại chưa có loại thu nào, hãy thêm loại thu trước.", Toast.LENGTH_SHORT).show()
                 }
 
                 // Gọi callback để trả danh sách loại thu
