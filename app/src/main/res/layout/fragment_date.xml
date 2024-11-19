@@ -1,14 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.DateFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <CalendarView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:id="@+id/calendarView">
+    </CalendarView>
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/calendarView">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/TextView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Thu Nhập"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical|center_horizontal">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_ThuNhap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="textview1"
+                    android:textSize="25dp"
+                    android:textColor="#3DCD50"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_below="@id/TextView1">
+                </TextView>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/TextView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chi Tiêu"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical|center_horizontal">
+                </TextView>
+                <TextView
+                    android:id="@+id/tv_ChiTieu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="textview1"
+                    android:textSize="18dp"
+                    android:textColor="#EF554A"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_below="@id/TextView2">
+                </TextView>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/TextView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tổng"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical|center_horizontal">
+                </TextView>
+                <TextView
+                    android:id="@+id/tv_Tong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="textview1"
+                    android:textSize="25dp"
+                    android:textColor="#2196F3"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_below="@id/TextView3">
+                </TextView>
+            </FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/framelayout"
+        android:id="@+id/recyclerViewIncome">
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/framelayout"
+        android:id="@+id/recyclerViewExpense">
+    </androidx.recyclerview.widget.RecyclerView>
+</RelativeLayout>

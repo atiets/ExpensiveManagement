@@ -255,7 +255,11 @@ class KhoanThuFragment : Fragment() {
             // Query "user" table to get userId
             val userRef = FirebaseDatabase.getInstance().getReference("user").child(uid)
             userRef.get().addOnSuccessListener { snapshot ->
+<<<<<<< Updated upstream
                 val userId = snapshot.child("userId").getValue(String::class.java)
+=======
+                val userId = snapshot.child("userId").getValue(Int::class.java)?.toString()
+>>>>>>> Stashed changes
                 if (userId.isNullOrEmpty()) {
                     Toast.makeText(requireContext(), "Không tìm thấy userId!", Toast.LENGTH_SHORT).show()
                     alertDialog.dismiss()
@@ -268,7 +272,11 @@ class KhoanThuFragment : Fragment() {
                 val newKhoanThu = KhoanThu(
                     idThu = id,
                     tenThu = name,
+<<<<<<< Updated upstream
                     loaiThu = loaiThu.getNameLoaiThu(),
+=======
+                    loaiThu = loaiThu.getNameLoaiThu(), // Get LoaiThu name as String
+>>>>>>> Stashed changes
                     thoiDiemThu = ngayThu,
                     soTien = soTien,
                     danhGia = 0,
@@ -451,6 +459,7 @@ class KhoanThuFragment : Fragment() {
                     }
                 }
 
+<<<<<<< Updated upstream
                 if (loaiThuList.isEmpty()) {
                     // Thêm mục mặc định nếu danh sách rỗng
                     loaiThuList.add(
@@ -462,6 +471,8 @@ class KhoanThuFragment : Fragment() {
                     Toast.makeText(requireContext(), "Hiện tại chưa có loại thu nào, hãy thêm loại thu trước.", Toast.LENGTH_SHORT).show()
                 }
 
+=======
+>>>>>>> Stashed changes
                 // Gọi callback để trả danh sách loại thu
                 callback(loaiThuList)
             }
