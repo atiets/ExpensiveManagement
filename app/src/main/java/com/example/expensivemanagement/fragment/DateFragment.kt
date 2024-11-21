@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
-import android.widget.CalendarView.OnDateChangeListener
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -32,25 +31,30 @@ class DateFragment : Fragment(R.layout.fragment_date) {
     private lateinit var calendarView: CalendarView
     private lateinit var recyclerViewIncome: RecyclerView
     private lateinit var recyclerViewExpense: RecyclerView
-    private lateinit var expenseDailyAdapterIncome: ExpenseDailyAdapter
+    private lateinit var expenseDailyAdapterIncome: IncomeDailyAdapter
     private lateinit var expenseDailyAdapterExpense: ExpenseDailyAdapter
 
     private lateinit var tvThuNhap: TextView
     private lateinit var tvChiTieu: TextView
     private lateinit var tvTong: TextView
 
-    private val khoanChiIncomeList = mutableListOf<KhoanChi>()
+    private val khoanThuIncomeList = mutableListOf<KhoanThu>()
     private val khoanChiExpenseList = mutableListOf<KhoanChi>()
 
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
 
+    private var lastSelectedDate: String? = null
+
+    private var totalExpenseValue = 0.0
+    private var totalIncomeValue = 0.0
+    private var TotalValue = 0.0
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         calendarView = view.findViewById(R.id.calendarView)
- 
-        // Khởi tạo RecyclerView và adapter
         recyclerViewIncome = view.findViewById(R.id.recyclerViewIncome)
         recyclerViewExpense = view.findViewById(R.id.recyclerViewExpense)
 
@@ -58,8 +62,8 @@ class DateFragment : Fragment(R.layout.fragment_date) {
         tvChiTieu = view.findViewById(R.id.tv_ChiTieu)
         tvTong = view.findViewById(R.id.tv_Tong)
 
-        expenseDailyAdapterIncome = ExpenseDailyAdapter(khoanChiIncomeList)
         expenseDailyAdapterExpense = ExpenseDailyAdapter(khoanChiExpenseList)
+        expenseDailyAdapterIncome = IncomeDailyAdapter(khoanThuIncomeList)
 
         recyclerViewIncome.layoutManager = LinearLayoutManager(requireContext())
         recyclerViewIncome.adapter = expenseDailyAdapterIncome
@@ -69,49 +73,36 @@ class DateFragment : Fragment(R.layout.fragment_date) {
 
         auth = FirebaseAuth.getInstance()
         currentUser = auth.currentUser!!
-        // Gọi hàm loadKhoanChi() để tải dữ liệu từ Firebase
-        loadKhoanChiByUser(currentUser.uid)
+
+        val currentDate =
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
+        loadKhoanChiByDate(currentUser.uid, currentDate)
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth)
-            loadKhoanChiByDate(currentUser.uid, selectedDate)
+
+            if (selectedDate != lastSelectedDate) {
+                lastSelectedDate = selectedDate
+
+                loadKhoanChiByDate(currentUser.uid, selectedDate)
+                loadKhoanThuByDate(currentUser.uid, selectedDate)
+
+                updateTotal(totalExpenseValue, totalIncomeValue)
+            }
+        }
+        tvThuNhap.setOnClickListener {
+            recyclerViewIncome.visibility = View.VISIBLE
+            recyclerViewExpense.visibility = View.GONE
+            loadKhoanThuByDate(currentUser.uid, lastSelectedDate ?: "")
         }
 
-        // Tải dữ liệu ban đầu cho ngày hiện tại
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Calendar.getInstance().time)
-        loadKhoanChiByDate(currentUser.uid, currentDate)
+        tvChiTieu.setOnClickListener {
+            recyclerViewIncome.visibility = View.GONE
+            recyclerViewExpense.visibility = View.VISIBLE
+            loadKhoanChiByDate(currentUser.uid, lastSelectedDate ?: "")
+        }
     }
 
-    private fun loadKhoanChiByUser(userId: String) {
-        val khoanChiRef = FirebaseDatabase.getInstance().getReference("KhoanChi")
-
-        // Truy cập trực tiếp vào node của userId
-        khoanChiRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val chiList = mutableListOf<KhoanChi>()
-                var totalExpense = 0.0
-
-                // Duyệt qua các khoản chi bên dưới userId
-                for (dataSnapshot in snapshot.children) {
-                    val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
-                    if (khoanChi != null) {
-                        chiList.add(khoanChi)
-                        totalExpense += khoanChi.soTien?.toDouble() ?: 0.0
-                    }
-                }
-
-                // Cập nhật danh sách vào Adapter
-                expenseDailyAdapterExpense.updateKhoanChiList(chiList)
-
-                // Hiển thị tổng chi tiêu
-                tvChiTieu.text = String.format("%,.2f VNĐ", totalExpense)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Lỗi tải danh sách KhoanChi!", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
     private fun loadKhoanChiByDate(userId: String, date: String) {
         val khoanChiRef = FirebaseDatabase.getInstance().getReference("KhoanChi")
 
@@ -123,22 +114,50 @@ class DateFragment : Fragment(R.layout.fragment_date) {
                 for (dataSnapshot in snapshot.children) {
                     val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
                     if (khoanChi != null) {
-                        val storedDate = khoanChi.thoiDiemChi // Giả sử `ngay` lưu dưới dạng "19/11/2024"
-
-                        if (isSameDate(storedDate, date)) { // Kiểm tra ngày có trùng không
+                        val storedDate = khoanChi.thoiDiemChi
+                        if (isSameDate(storedDate, date)) {
                             chiList.add(khoanChi)
-                            totalExpense += khoanChi.soTien?.toDouble() ?: 0.0
+                            totalExpense += khoanChi.soTien
                         }
                     }
                 }
 
-                // Cập nhật danh sách và tổng chi tiêu
                 expenseDailyAdapterExpense.updateKhoanChiList(chiList)
-                tvChiTieu.text = String.format("%,.2f VNĐ", totalExpense)
+                totalExpenseValue = totalExpense
+                updateTotal(totalExpenseValue, totalIncomeValue)
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(requireContext(), "Lỗi tải danh sách KhoanChi!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun loadKhoanThuByDate(userId: String, date: String) {
+        val khoanThuRef = FirebaseDatabase.getInstance().getReference("KhoanThu")
+
+        khoanThuRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val thuList = mutableListOf<KhoanThu>()
+                var totalIncome = 0.0
+
+                for (dataSnapshot in snapshot.children) {
+                    val khoanThu = dataSnapshot.getValue(KhoanThu::class.java)
+                    if (khoanThu != null) {
+                        val storedDate = khoanThu.thoiDiemThu
+                        if (isSameDate(storedDate, date)) {
+                            thuList.add(khoanThu)
+                            totalIncome += khoanThu.soTien
+                        }
+                    }
+                }
+                expenseDailyAdapterIncome.updateKhoanThuList(thuList)
+                totalIncomeValue = totalIncome
+                updateTotal(totalExpenseValue, totalIncomeValue)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(requireContext(), "Lỗi tải danh sách KhoanThu!", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -157,4 +176,28 @@ class DateFragment : Fragment(R.layout.fragment_date) {
             false
         }
     }
+
+    private fun updateTotal(totalExpense: Double, totalIncome: Double) {
+        val netTotal = totalIncome - totalExpense
+
+        // Cập nhật tổng chi tiêu
+        tvChiTieu.text = formatMoney(totalExpense.toInt())
+
+        // Cập nhật tổng thu nhập
+        tvThuNhap.text = formatMoney(totalIncome.toInt())
+
+        // Cập nhật tổng thu nhập sau khi trừ chi tiêu
+        tvTong.text = formatMoney(netTotal.toInt())
+    }
+
+    private fun formatMoney(amount: Int): String {
+        return if (amount >= 1_000_000) {
+            val moneyInMillions = amount / 1_000_000.0
+            val formatted = String.format("%,.2f", moneyInMillions)
+            "$formatted Tr VNĐ"
+        } else {
+            String.format("%,.0f VNĐ", amount.toDouble()).replace(',', '.')
+        }
+    }
+
 }

@@ -20,7 +20,8 @@ class ExpenseDailyAdapter(private val khoanChiList: MutableList<KhoanChi>) :
     override fun onBindViewHolder(holder: ExpenseViewHolder, position: Int) {
         val khoanChi = khoanChiList[position]
          holder.tvExpenseTitle.text = khoanChi.name
-        holder.tvExpenseAmount.text = khoanChi.loaiChi}
+        holder.tvExpenseAmount.text = khoanChi.soTien.toString()
+    }
 
     override fun getItemCount(): Int {
         return khoanChiList.size

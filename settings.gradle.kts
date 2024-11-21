@@ -25,4 +25,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "ExpensiveManagement"
 include(":app")
- 
