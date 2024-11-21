@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensivemanagement.R
+import com.example.expensivemanagement.model.KhoanChi
 import com.example.expensivemanagement.model.KhoanThu
 
-class IncomeDailyAdapter(private val khoanThuList: List<KhoanThu>) :
+class IncomeDailyAdapter(private val khoanThuList: MutableList<KhoanThu>) :
     RecyclerView.Adapter<IncomeDailyAdapter.IncomeViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IncomeViewHolder {
         val view: View = LayoutInflater.from(parent.context)
@@ -34,5 +35,10 @@ class IncomeDailyAdapter(private val khoanThuList: List<KhoanThu>) :
             tvIncomeTitle = itemView.findViewById<TextView>(R.id.tv_dmKhoan)
             tvIncomeAmount = itemView.findViewById<TextView>(R.id.tv_sotien)
         }
+    }
+    fun updateKhoanThuList(newList: List<KhoanThu>) {
+        khoanThuList.clear()
+        khoanThuList.addAll(newList)
+        notifyDataSetChanged()
     }
 }
