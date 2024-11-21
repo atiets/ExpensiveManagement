@@ -190,7 +190,7 @@
                     android:layout_marginEnd="10dp" />
 
                 <Button
-                    android:id="@+id/btnHuyThemReinder"
+                    android:id="@+id/btnHuyThemReminder"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
