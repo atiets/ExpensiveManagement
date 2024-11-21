@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.RemindFragment">
+    tools:context=".fragment.ReminderFragment">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,10 +28,10 @@
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <ListView
-                android:id="@+id/listViewReminder"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewLoaiThu"
                 android:layout_width="match_parent"
-                android:layout_height="540dp"
+                android:layout_height="545dp"
                 android:layout_margin="10dp" />
             <Button
                 android:layout_width="wrap_content"
