@@ -2,6 +2,7 @@ package com.example.expensivemanagement.fragment
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -185,12 +186,31 @@ class ChartFragment : Fragment() {
                         colorIndex++
                     }
                     val dataSet = PieDataSet(entries, "Biểu đồ chi tiêu tháng ${getMonthName(currentMonth)} $currentYear")
-                    dataSet.colors = colors
+                    val pastelColors = listOf(
+                        Color.parseColor("#FFB6C1"), // Light Pink
+                        Color.parseColor("#ADD8E6"), // Light Blue
+                        Color.parseColor("#90EE90"), // Light Green
+                        Color.parseColor("#FFFFE0"), // Light Yellow
+                        Color.parseColor("#FFDAB9"), // Peach Puff
+                        Color.parseColor("#B0E0E6"), // Powder Blue
+                        Color.parseColor("#FFDEAD"), // Navajo White
+                        Color.parseColor("#FAFAD2"), // Light Goldenrod Yellow
+                        Color.parseColor("#E6E6FA"), // Lavender
+                        Color.parseColor("#D8BFD8")  // Thistle
+                    )
+
+                    val fullColorList = mutableListOf<Int>()
+                    for (i in 0..(entries.size / pastelColors.size)) {
+                        fullColorList.addAll(pastelColors)
+                    }
+                    dataSet.colors = fullColorList.take(entries.size)
+                    dataSet.valueTextSize = 14f // Kích thước chữ
                     val data = PieData(dataSet)
                     pieChart?.data = data
                     val description = Description()
                     description.text = "Biểu đồ chi tiêu tháng ${getMonthName(currentMonth)} $currentYear"
                     pieChart?.description = description
+                    pieChart?.description?.textSize = 16f
                     pieChart?.isDrawHoleEnabled = false
                     pieChart?.setEntryLabelTextSize(14f)
                     pieChart?.animateY(1400)
