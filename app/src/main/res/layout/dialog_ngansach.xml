@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFD8D8">
 
     <EditText
         android:id="@+id/edtTenNganSach"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:background="#FD9192"
+        android:textColor="#F44336"
         android:hint="Tên ngân sách"/>
 
     <TextView
@@ -25,6 +30,8 @@
         android:id="@+id/btnSelectDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#23000C"
+        app:cornerRadius="20dp"
         android:text="Chọn tháng/năm"/>
 
     <EditText
@@ -32,10 +39,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Số tiền"
+        android:minHeight="48dp"
         android:inputType="number"/>
 
     <Button
         android:id="@+id/btnSave"
+        android:backgroundTint="#23000C"
+        app:cornerRadius="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Lưu"/>
