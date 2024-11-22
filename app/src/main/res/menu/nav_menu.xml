@@ -39,6 +39,11 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/nav_infor"
             android:title="Liên hệ"/>
+
+        <item
+            android:id="@+id/nav_ngansach"
+            android:icon="@drawable/nav_ngansach"
+            android:title="Ngân Sách"/>
     </group>
 
     <item android:title="">
