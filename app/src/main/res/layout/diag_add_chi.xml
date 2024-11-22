@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="0dp"
+    android:background="#FF6F6F"
+    android:radius="1600dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="8dp"
-        android:layout_margin="16dp">
+        app:cardCornerRadius="40dp"
+        app:cardElevation="40dp"
+        android:layout_margin="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp"
-            android:background="#FFD8D8"
-            android:radius = "32dp">
+            android:background="#FFD8D8">
+
             <TextView
                 android:id="@+id/tv_title_add_chi"
                 android:layout_width="match_parent"
@@ -132,7 +135,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginBottom="5dp"
                     android:background="@drawable/boxshadow"
-                    android:gravity="center"/>
+                    android:gravity="center" />
             </LinearLayout>
 
             <LinearLayout
@@ -166,6 +169,7 @@
                     android:backgroundTint="#857878"
                     app:cornerRadius="20dp" />
             </LinearLayout>
+
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

@@ -6,7 +6,8 @@
     android:layout_margin="20dp"
     app:cardCornerRadius="40dp"
     app:cardElevation="20dp"
-    android:background="#FFD8D8">
+    android:background="#FF6F6F"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
