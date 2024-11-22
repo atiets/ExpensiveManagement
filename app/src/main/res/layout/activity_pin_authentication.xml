@@ -50,6 +50,7 @@
             android:id="@+id/pinSubmitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="𝑪𝒐𝒏𝒇𝒊𝒓𝒎" />
+            android:text="𝑪𝒐𝒏𝒇𝒊𝒓𝒎"
+            android:backgroundTint="#FD9192"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
