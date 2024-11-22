@@ -27,6 +27,7 @@ import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.text.NumberFormat
 
 class KhoanChiFragment : Fragment() {
 
@@ -76,7 +77,9 @@ class KhoanChiFragment : Fragment() {
                 if (snapshot.exists()) {
                     for (dataSnapshot in snapshot.children) {
                         val khoanChi = dataSnapshot.getValue(KhoanChi::class.java)
-                        khoanChi?.let { khoanChiList.add(it) }
+                        khoanChi?.let {
+                            khoanChiList.add(it)
+                        }
                     }
                     Log.d("KhoanChiFragment", "Data loaded, items count: ${khoanChiList.size}")
                 } else {
@@ -472,5 +475,13 @@ class KhoanChiFragment : Fragment() {
                 callback(ArrayList()) // Trả về danh sách rỗng trong trường hợp lỗi
             }
         })
+    }
+
+    private fun formatCurrency(amount: Int?): String {
+        return if (amount != null) {
+            NumberFormat.getNumberInstance(Locale.US).format(amount) + " VND"
+        } else {
+            "0 VND"
+        }
     }
 }
